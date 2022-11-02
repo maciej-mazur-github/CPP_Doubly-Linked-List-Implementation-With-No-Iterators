@@ -60,8 +60,20 @@ int main()
 
 	cout << "Current list2 status:\n";
 	cout << list2;
-	cout << "Trying to insert b element again but this at the position(3) and then printing the result list:\n";
+	cout << "\nTrying to insert b (2) element again but this at the position(3) and then printing the result list:\n";
 	list2.moveToPosition(3);
+	list2.addElement(b);
+	cout << list2;
+	cout << "\nTrying to insert b (2) element again but this at the position(0) and then printing the result list:\n";
+	list2.setChosenAsFirst();
+	list2.addElement(b);
+	cout << list2;
+	cout << "\nTrying to insert b (2) element again but this at the last but one position and then printing the result list:\n";
+	list2.setChosenAsLast();
+	list2.addElement(b);
+	cout << list2;
+	cout << "\nTrying to insert b (2) element again but this at the last position and then printing the result list:\n";
+	list2.setChosenAfterLast();
 	list2.addElement(b);
 	cout << list2;
 
