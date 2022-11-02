@@ -6,131 +6,132 @@
 using namespace std;
 
 
-template <class T>
-class list;
 
 template <class T>
-ostream& operator<<(ostream& out, const list<T>& arg);
+class List;
 
 template <class T>
-class list
+ostream& operator<<(ostream& out, const List<T>& arg);
+
+template <class T>
+class List
 {
 protected:
-	struct node
+	struct Node
 	{
-		T* obj_ptr;
-		node* next_node_ptr;
-		node* previous_node_ptr;
-		node()
-			: next_node_ptr(NULL), previous_node_ptr(NULL), obj_ptr(NULL) {}
+		T* objPtr;
+		Node* nextNodePtr;
+		Node* previousNodePtr;
+		Node()
+			: nextNodePtr(NULL), previousNodePtr(NULL), objPtr(NULL) {}
 	};
 
-	node* first_node_ptr;
-	node* last_node_ptr;
-	node* chosen_node_ptr;
+	Node* firstNodePtr;
+	Node* lastNodePtr;
+	Node* chosenNodePtr;
 
-	int element_counter;
+	int elementCounter;
 
 public:
-	list()
+	List()
 	{
-		first_node_ptr = last_node_ptr = chosen_node_ptr = NULL;
-		element_counter = 0;
+		firstNodePtr = lastNodePtr = chosenNodePtr = NULL;
+		elementCounter = 0;
 	}
 
-	friend ostream& operator<< <T>(ostream& out, const list<T>& arg);
+	friend ostream& operator<< <T>(ostream& out, const List<T>& arg);
 
-	void add_element(T& obj);
+	void addElement(T& obj);
 
-	void print_chosen_element() const
+	void printChosenElement() const
 	{
-		if (!first_node_ptr)
+		if (!firstNodePtr)
 			return;
 
 		else
-			cout << chosen_node_ptr->obj_ptr;
+			cout << chosenNodePtr->objPtr;
 	}
 
-	void set_chosen_as_first()
+	void setChosenAsFirst()
 	{
-		if (first_node_ptr)
-			chosen_node_ptr = first_node_ptr;
+		if (firstNodePtr)
+			chosenNodePtr = firstNodePtr;
 	}
 
-	void set_chosen_as_last()
+	void setChosenAsLast()
 	{
-		if (last_node_ptr)
-			chosen_node_ptr = last_node_ptr;
+		if (lastNodePtr)
+			chosenNodePtr = lastNodePtr;
 	}
 
-	void set_chosen_after_last()
+	void setChosenAfterLast()
 	{
-		chosen_node_ptr = NULL;
+		chosenNodePtr = NULL;
 	}
 
-	node* go_to_next_node()
+	Node* goToNextNode()
 	{
-		chosen_node_ptr = chosen_node_ptr->next_node_ptr;
-		return chosen_node_ptr;
+		chosenNodePtr = chosenNodePtr->nextNodePtr;
+		return chosenNodePtr;
 	}
 
-	node* go_to_previous_node()
+	Node* goToPreviousNode()
 	{
-		chosen_node_ptr = chosen_node_ptr->previous_node_ptr;
-		return chosen_node_ptr;
+		chosenNodePtr = chosenNodePtr->previousNodePtr;
+		return chosenNodePtr;
 	}
 
-	void move_to_position(int position)
+	void moveToPosition(int position)
 	{
-		if (!first_node_ptr)
+		if (!firstNodePtr)
 			return;
 
-		if (position >= element_counter)
-			set_chosen_after_last();
+		if (position >= elementCounter)
+			setChosenAfterLast();
 		else
 		{
-			set_chosen_as_first();
+			setChosenAsFirst();
 
 			for (int i = 0; i < position; i++)
 			{
-				go_to_next_node();
+				goToNextNode();
 			}
 		}
 	}
 
-	void remove_chosen_element();
+	void removeChosenElement();
 
-	~list();
+	~List();
 
 private:
-	void add_element_as_first(node* newly_added_node_ptr);
-	void add_element_as_last(node* newly_added_node_ptr);
-	void add_element_in_middle(node* newly_added_node_ptr);
-	//node* find_node_before_chosen();
+	void addElementAsFirst(Node* newlyAddedNodePtr);
+	void addElementAsLast(Node* newlyAddedNodePtr);
+	void addElementInMiddle(Node* newlyAddedNodePtr);
+	
 
-	void remove_last_element();
-	void remove_first_element();
-	void remove_middle_element();
+	void removeLastElement();
+	void removeFirstElement();
+	void removeMiddleElement();
 };
 //##################################################################################
 //##################################################################################
 
 
 template <class T>
-list<T>::~list()
+List<T>::~List()
 {
-	if (!first_node_ptr)  // stop doing anything if the list is empty
+	if (!firstNodePtr)  // stop doing anything if the list is empty
 		return;
 
-	node* bishop;
+	Node* bishop;
 	int i;
 	cout << "\n\n";
 
-	for (chosen_node_ptr = first_node_ptr, i = 0; chosen_node_ptr; i++)
+	for (chosenNodePtr = firstNodePtr, i = 0; chosenNodePtr; i++)
 	{
-		bishop = chosen_node_ptr->next_node_ptr;
-		delete chosen_node_ptr;
-		chosen_node_ptr = bishop;
+		bishop = chosenNodePtr->nextNodePtr;
+		delete chosenNodePtr;
+		chosenNodePtr = bishop;
 
 		//cout << "Destruction of the " << i << " element" << endl;
 	}
@@ -139,184 +140,172 @@ list<T>::~list()
 
 
 template <class T>
-void list<T>::remove_middle_element()
+void List<T>::removeMiddleElement()
 {
-	typename list<T>::node* previous_node = chosen_node_ptr->previous_node_ptr;
-	typename list<T>::node* next_node = chosen_node_ptr->next_node_ptr;
+	typename List<T>::Node* previous_node = chosenNodePtr->previousNodePtr;
+	typename List<T>::Node* next_node = chosenNodePtr->nextNodePtr;
 
-	delete chosen_node_ptr;
-	previous_node->next_node_ptr = next_node;
-	next_node->previous_node_ptr = previous_node;
+	delete chosenNodePtr;
+	previous_node->nextNodePtr = next_node;
+	next_node->previousNodePtr = previous_node;
 }
 
 
 template <class T>
-void list<T>::remove_first_element()
+void List<T>::removeFirstElement()
 {
-	// 1-element list scenario has been covered in remove_last_element()
+	// 1-element list scenario has been covered in removeLastElement()
 
-	if (first_node_ptr->next_node_ptr == last_node_ptr) // 2-element list scenario
+	if (firstNodePtr->nextNodePtr == lastNodePtr) // 2-element list scenario
 	{
-		delete first_node_ptr;
-		first_node_ptr = last_node_ptr;  // the list becomes a 1-element one
-		chosen_node_ptr = first_node_ptr;
-		first_node_ptr->previous_node_ptr = NULL;
+		delete firstNodePtr;
+		firstNodePtr = lastNodePtr;  // the list becomes a 1-element one
+		chosenNodePtr = firstNodePtr;
+		firstNodePtr->previousNodePtr = NULL;
 	}
 
 	else
 	{
-		node* second_node = first_node_ptr->next_node_ptr;
-		delete first_node_ptr;
-		first_node_ptr = second_node;
-		chosen_node_ptr = first_node_ptr;
-		first_node_ptr->previous_node_ptr = NULL;
+		Node* second_node = firstNodePtr->nextNodePtr;
+		delete firstNodePtr;
+		firstNodePtr = second_node;
+		chosenNodePtr = firstNodePtr;
+		firstNodePtr->previousNodePtr = NULL;
 	}
 }
 
 
 template <class T>
-void list<T>::remove_last_element()  // 3 scenarios possible here
+void List<T>::removeLastElement()  // 3 scenarios possible here
 {
-	if (first_node_ptr == last_node_ptr)  // if this is 1-element list then after the operation the list becomes empty
+	if (firstNodePtr == lastNodePtr)  // if this is 1-element list then after the operation the list becomes empty
 	{
-		delete chosen_node_ptr;    // free the memory
+		delete chosenNodePtr;    // free the memory
 
-		first_node_ptr = last_node_ptr = chosen_node_ptr = NULL;
+		firstNodePtr = lastNodePtr = chosenNodePtr = NULL;
 		return;
 	}
 
-	else if (first_node_ptr->next_node_ptr == last_node_ptr)   // if this is a 2-element list
+	else if (firstNodePtr->nextNodePtr == lastNodePtr)   // if this is a 2-element list
 	{
-		delete chosen_node_ptr;
-		last_node_ptr = chosen_node_ptr = first_node_ptr;
-		first_node_ptr->next_node_ptr = NULL;
+		delete chosenNodePtr;
+		lastNodePtr = chosenNodePtr = firstNodePtr;
+		firstNodePtr->nextNodePtr = NULL;
 		return;
+	}
+
+	else														// if the list has 3 or more elements
+	{
+		typename List<T>::Node* penultimate = lastNodePtr->previousNodePtr;
+		delete lastNodePtr;
+		penultimate->nextNodePtr = NULL;
+		lastNodePtr = penultimate;
+	}
+
+}
+
+template <class T>
+void List<T>::removeChosenElement()
+{
+	if (!chosenNodePtr)   // if the list is empty or chosenNodePtr points at after the last element (is NULL)
+		return;
+
+	if (chosenNodePtr == lastNodePtr)
+	{
+		removeLastElement();
+	}
+
+	else if (chosenNodePtr == firstNodePtr)
+	{
+		removeFirstElement();
 	}
 
 	else
-	{
-		typename list<T>::node* penultimate = last_node_ptr->previous_node_ptr;
-		delete last_node_ptr;
-		penultimate->next_node_ptr = NULL;
-		last_node_ptr = penultimate;
-	}
-
-}
-
-template <class T>
-void list<T>::remove_chosen_element()
-{
-	if (!chosen_node_ptr)   // if the list is empty or chosen_node_ptr points at after the last element (is NULL)
-		return;
-
-	if (chosen_node_ptr == last_node_ptr)
-	{
-		remove_last_element();
-		//return;    // to avoid checking out the remaining conditions
-	}
-
-	else if (chosen_node_ptr == first_node_ptr)
-	{
-		remove_first_element();
-		//return;
-	}
-
-	else
-		remove_middle_element();
+		removeMiddleElement();
 
 
-	element_counter--;
+	elementCounter--;
 }
 
 
 template <class T>
-ostream& operator<<(ostream& out, const list<T>& arg)
+ostream& operator<<(ostream& out, const List<T>& arg)
 {
-	if (!(arg.first_node_ptr))
+	if (!(arg.firstNodePtr))
 		return out;
 
-	typename list<T>::node* chaser = arg.first_node_ptr;
+	typename List<T>::Node* bishop = arg.firstNodePtr;
 
-	for (; chaser; chaser = chaser->next_node_ptr)
+	for (; bishop; bishop = bishop->nextNodePtr)
 	{
-		out << *(chaser->obj_ptr) << "\t";
+		out << *(bishop->objPtr) << "\t";
 	}
 
 	return out;
 }
 
 
-//template <class T>
-//typename list<T>::node* list<T>::find_node_before_chosen()
-//{
-//	node* bishop = first_node_ptr;
-//
-//	for (bishop; bishop->next_node_ptr != chosen_node_ptr; bishop = bishop->next_node_ptr);
-//
-//	return bishop;
-//}
-
 
 template <class T>
-void list<T>::add_element_in_middle(node* newly_added_node_ptr)
+void List<T>::addElementInMiddle(Node* newlyAddedNodePtr)
 {
-	node* previous_node = chosen_node_ptr->previous_node_ptr;
-	previous_node->next_node_ptr = newly_added_node_ptr;
-	newly_added_node_ptr->previous_node_ptr = previous_node;
-	newly_added_node_ptr->next_node_ptr = chosen_node_ptr;
-	chosen_node_ptr->previous_node_ptr = newly_added_node_ptr;
-	chosen_node_ptr = newly_added_node_ptr;
+	Node* previous_node = chosenNodePtr->previousNodePtr;
+	previous_node->nextNodePtr = newlyAddedNodePtr;
+	newlyAddedNodePtr->previousNodePtr = previous_node;
+	newlyAddedNodePtr->nextNodePtr = chosenNodePtr;
+	chosenNodePtr->previousNodePtr = newlyAddedNodePtr;
+	chosenNodePtr = newlyAddedNodePtr;
 }
 
 
 template <class T>
-void list<T>::add_element_as_last(node* newly_added_node_ptr)
+void List<T>::addElementAsLast(Node* newlyAddedNodePtr)
 {
-	last_node_ptr->next_node_ptr = newly_added_node_ptr;
-	newly_added_node_ptr->previous_node_ptr = last_node_ptr;
-	last_node_ptr = newly_added_node_ptr;
+	lastNodePtr->nextNodePtr = newlyAddedNodePtr;
+	newlyAddedNodePtr->previousNodePtr = lastNodePtr;
+	lastNodePtr = newlyAddedNodePtr;
 }
 
 
 
 template <class T>
-void list<T>::add_element_as_first(node* newly_added_node_ptr)
+void List<T>::addElementAsFirst(Node* newlyAddedNodePtr)
 {
-	if (!first_node_ptr)   // in case the list is empty yet
+	if (!firstNodePtr)   // in case the list is empty yet
 	{
-		first_node_ptr = newly_added_node_ptr;
-		last_node_ptr = newly_added_node_ptr;
+		firstNodePtr = newlyAddedNodePtr;
+		lastNodePtr = newlyAddedNodePtr;
 	}
 	else
 	{
-		newly_added_node_ptr->next_node_ptr = first_node_ptr;
-		first_node_ptr->previous_node_ptr = newly_added_node_ptr;
-		first_node_ptr = newly_added_node_ptr;
-		chosen_node_ptr = first_node_ptr;
+		newlyAddedNodePtr->nextNodePtr = firstNodePtr;
+		firstNodePtr->previousNodePtr = newlyAddedNodePtr;
+		firstNodePtr = newlyAddedNodePtr;
+		chosenNodePtr = firstNodePtr;
 	}
 }
 
 template <class T>
-void list<T>::add_element(T& obj)
+void List<T>::addElement(T& obj)
 {
-	node* new_node_ptr = new node;
-	new_node_ptr->obj_ptr = &obj;
+	Node* newNodePtr = new Node;
+	newNodePtr->objPtr = &obj;
 
-	if (!first_node_ptr || chosen_node_ptr == first_node_ptr)
-		add_element_as_first(new_node_ptr);
+	if (!firstNodePtr || chosenNodePtr == firstNodePtr)    // if the list is empty or chosenNodePtr points at firstNodePtr
+		addElementAsFirst(newNodePtr);
 	else
 	{
-		if (!chosen_node_ptr)
+		if (!chosenNodePtr)
 		{
-			add_element_as_last(new_node_ptr);
+			addElementAsLast(newNodePtr);
 		}
 		else
 		{
-			add_element_in_middle(new_node_ptr);
+			addElementInMiddle(newNodePtr);
 		}
 	}
 
-	element_counter++;
+	elementCounter++;
 }
 
 
