@@ -45,11 +45,22 @@ public:
 
 	void printChosenElement() const
 	{
-		if (!firstNodePtr)
-			return;
+		cout << endl;
 
+		if (!firstNodePtr)
+		{
+			cout << "The list is empty" << endl;
+		}
+		else if (!chosenNodePtr)
+		{
+			cout << "The pointer chosenNodePtr is set outside the list range" << endl;
+		}
 		else
-			cout << chosenNodePtr->objPtr;
+		{
+			cout << *(chosenNodePtr->objPtr);
+		}		
+
+		cout << endl;
 	}
 
 	void setChosenAsFirst()
